@@ -1,21 +1,33 @@
 package dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
-public class FlightCreateDto {
+public class FlightDto {
 
-    private Long planeId;
+    private Long id;
+    @JsonProperty("plane")
+    private PlaneDto planeDto;
     private String startDestination;
     private String finishDestination;
     private Integer flightLength;
     private BigDecimal price;
 
-    public Long getPlaneId() {
-        return planeId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPlaneId(Long planeId) {
-        this.planeId = planeId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public PlaneDto getPlaneDto() {
+        return planeDto;
+    }
+
+    public void setPlaneDto(PlaneDto planeDto) {
+        this.planeDto = planeDto;
     }
 
     public String getStartDestination() {
