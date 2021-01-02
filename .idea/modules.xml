@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Flight_servis/Flight_servis.iml" filepath="$PROJECT_DIR$/Flight_servis/Flight_servis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SoftverskeKomponente2.iml" filepath="$PROJECT_DIR$/SoftverskeKomponente2.iml" />
       <module fileurl="file://$PROJECT_DIR$/Ticket_servis/Ticket_servis.iml" filepath="$PROJECT_DIR$/Ticket_servis/Ticket_servis.iml" />
       <module fileurl="file://$PROJECT_DIR$/User_servis/User_servis.iml" filepath="$PROJECT_DIR$/User_servis/User_servis.iml" />
     </modules>
