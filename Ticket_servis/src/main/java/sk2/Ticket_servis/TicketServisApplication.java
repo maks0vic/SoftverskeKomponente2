@@ -10,4 +10,6 @@ public class TicketServisApplication {
 		SpringApplication.run(TicketServisApplication.class, args);
 	}
 
+	int x;
+
 }
