@@ -18,16 +18,18 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private String passportNumber;
     private Rank rank;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, String passportNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.passportNumber = passportNumber;
         this.rank = Rank.BRONZE;
     }
 
@@ -77,5 +79,13 @@ public class User {
 
     public void setRank(Rank rank) {
         this.rank = rank;
+    }
+
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
     }
 }

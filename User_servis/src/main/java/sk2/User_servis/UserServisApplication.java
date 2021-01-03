@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import sk2.User_servis.entities.Admin;
+import sk2.User_servis.repository.AdminRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class UserServisApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UserServisApplication.class, args);
+
 	}
 
 }

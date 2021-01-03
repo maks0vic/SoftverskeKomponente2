@@ -11,7 +11,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import sk2.User_servis.entities.Admin;
 import sk2.User_servis.entities.User;
+import sk2.User_servis.repository.AdminRepository;
 import sk2.User_servis.repository.UserRepository;
 
 @Component
@@ -19,17 +21,31 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private PasswordEncoder encoder;
     private UserRepository userRepo;
+    private AdminRepository adminRepo;
 
     @Autowired
-    public CustomAuthenticationProvider(UserRepository userRepo) {
+    public CustomAuthenticationProvider(UserRepository userRepo, AdminRepository adminRepo) {
         super();
         this.userRepo = userRepo;
+        this.adminRepo = adminRepo;
     }
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         String email = auth.getName();
         String password = auth.getCredentials().toString();
+
+
+        Admin admin = adminRepo.findByUsername(email);
+
+
+        if (admin != null) {
+
+            if (encoder.matches(password, admin.getPassword())) {
+                System.out.println("NASAO ADMINA " + email);
+                return new UsernamePasswordAuthenticationToken(email, password, emptyList());
+            }
+        }
 
         User user = userRepo.findByEmail(email);
 

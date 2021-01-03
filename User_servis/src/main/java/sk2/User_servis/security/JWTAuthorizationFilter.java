@@ -20,6 +20,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import sk2.User_servis.repository.AdminRepository;
 import sk2.User_servis.repository.UserRepository;
 
 /**
@@ -29,11 +30,14 @@ import sk2.User_servis.repository.UserRepository;
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepo;
+    private AdminRepository adminRepo;
+
 
     @Autowired
-    public JWTAuthorizationFilter(AuthenticationManager authManager, UserRepository userRepo) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, UserRepository userRepo, AdminRepository adminRepo) {
         super(authManager);
         this.userRepo = userRepo;
+        this.adminRepo = adminRepo;
     }
 
     @Override
@@ -58,13 +62,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             // subject je email od korisnika i spakovan je u JWT
             String email = jwt.getSubject();
 
-            // Provera da li se nalazi user u bazi
-            if (userRepo.existsByEmail(email) == false) {
-                return null;
-            }
+            System.out.println("AUTORIZACIJA " + email);
 
-            if (email != null) {
-                return new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
+            // Provera da li se nalazi user u bazi
+            if (userRepo.existsByEmail(email) || adminRepo.existsByUsername(email)) {
+                if (email != null) {
+                    System.out.println("AUTORIZOVAO " + email);
+                    return new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
+                }
             }
             return null;
         }

@@ -1,7 +1,6 @@
 package sk2.User_servis.forms;
 
-public class RegistrationForm {
-
+public class UpdateDataForm {
     private String firstName;
     private String lastName;
     private String email;
