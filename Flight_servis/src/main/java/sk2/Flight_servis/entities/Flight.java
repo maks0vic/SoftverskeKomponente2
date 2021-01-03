@@ -1,18 +1,32 @@
-package dto;
+package sk2.Flight_servis.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import javax.persistence.*;
 import java.math.BigDecimal;
 
-public class FlightDto {
+@Entity
+public class Flight {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonProperty("plane")
-    private PlaneDto planeDto;
+    @ManyToOne
+    private Plane plane;
     private String startDestination;
     private String finishDestination;
-    private Integer flightLength;
+    private Integer length;
     private BigDecimal price;
+
+    public Flight(){
+    }
+
+    public Flight(Long id, Plane plane, String startDestination, String finishDestination, Integer length, BigDecimal price) {
+        this.id = id;
+        this.plane = plane;
+        this.startDestination = startDestination;
+        this.finishDestination = finishDestination;
+        this.length = length;
+        this.price = price;
+    }
 
     public Long getId() {
         return id;
@@ -22,12 +36,12 @@ public class FlightDto {
         this.id = id;
     }
 
-    public PlaneDto getPlaneDto() {
-        return planeDto;
+    public Plane getPlane() {
+        return plane;
     }
 
-    public void setPlaneDto(PlaneDto planeDto) {
-        this.planeDto = planeDto;
+    public void setPlane(Plane plane) {
+        this.plane = plane;
     }
 
     public String getStartDestination() {
@@ -46,12 +60,12 @@ public class FlightDto {
         this.finishDestination = finishDestination;
     }
 
-    public Integer getFlightLength() {
-        return flightLength;
+    public Integer getLength() {
+        return length;
     }
 
-    public void setFlightLength(Integer flightLength) {
-        this.flightLength = flightLength;
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     public BigDecimal getPrice() {
