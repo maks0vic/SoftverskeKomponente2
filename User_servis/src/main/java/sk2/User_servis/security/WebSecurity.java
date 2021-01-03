@@ -55,7 +55,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-
         customAuthenticationProvider.setEncoder(encoder);
         auth.authenticationProvider(customAuthenticationProvider);
     }

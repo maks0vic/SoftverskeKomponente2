@@ -1,14 +1,12 @@
 package sk2.User_servis.entities;
 
-import sk2.User_servis.enums.Rank;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User {
+public class CreditCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,19 +14,18 @@ public class User {
 
     private String firstName;
     private String lastName;
-    private String email;
-    private String password;
-    private Rank rank;
+    private String cardNumber;
+    private String securityNumber;
 
-    public User() {
+    public CreditCard() {
     }
 
-    public User(String firstName, String lastName, String email, String password) {
+    public CreditCard(long id, String firstName, String lastName, String cardNumber, String securityNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.rank = Rank.BRONZE;
+        this.cardNumber = cardNumber;
+        this.securityNumber = securityNumber;
     }
 
     public long getId() {
@@ -55,27 +52,19 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
-    public String getPassword() {
-        return password;
+    public String getSecurityNumber() {
+        return securityNumber;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Rank getRank() {
-        return rank;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
+    public void setSecurityNumber(String securityNumber) {
+        this.securityNumber = securityNumber;
     }
 }
