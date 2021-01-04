@@ -14,7 +14,9 @@ import sk2.Ticket_servis.forms.BuyTicketForm;
 import sk2.Ticket_servis.repository.TicketRepository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("")
@@ -44,21 +46,22 @@ public class Controller {
     }
 
     @PostMapping("/bought_tickets")
-    public ResponseEntity<String> boughtTickets(@RequestBody BoughtTicketsForm ticketForm) {
+    public ResponseEntity<List<Ticket>> boughtTickets(@RequestBody BoughtTicketsForm ticketForm) {
         try {
             System.out.println("Usao u bought_tickets");
 
             if (ticketRepo.existsByUserId(ticketForm.getUserId())) {
-                Ticket ticket = ticketRepo.findByUserId(ticketForm.getUserId());
-                return new ResponseEntity<String>("Bought ticket: " + ticket.getUserId()
-                        + " " + ticket.getFlightId() + " " + ticket.getDate().toString(), HttpStatus.ACCEPTED);
+                List<Ticket> tickets = ticketRepo.findAllByUserId(ticketForm.getUserId());
+
+
+                return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.ACCEPTED);
             }
 
-            return new ResponseEntity<String>("Bought ticket: empty", HttpStatus.ACCEPTED);
+            return new ResponseEntity<List<Ticket>>(Collections.emptyList(), HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<List<Ticket>>(HttpStatus.BAD_REQUEST);
         }
     }
 }
