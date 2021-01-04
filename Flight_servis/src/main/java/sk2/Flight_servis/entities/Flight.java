@@ -27,6 +27,8 @@ public class Flight {
         this.price = price;
     }
 
+
+
     public Long getId() {
         return id;
     }

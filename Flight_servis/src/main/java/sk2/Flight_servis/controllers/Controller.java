@@ -3,6 +3,7 @@ package sk2.Flight_servis.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 import sk2.Flight_servis.entities.Flight;
 import sk2.Flight_servis.entities.Plane;
@@ -10,6 +11,7 @@ import sk2.Flight_servis.forms.*;
 import sk2.Flight_servis.repository.FlightRepository;
 import sk2.Flight_servis.repository.PlaneRepository;
 
+import javax.jms.Queue;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,12 @@ public class Controller {
 
     private FlightRepository flightRepo;
     private PlaneRepository planeRepo;
+
+    @Autowired
+    JmsTemplate jmsTemplate;
+
+    @Autowired
+    Queue ticketsQueue;
 
     @Autowired
     public Controller(FlightRepository flightRepo, PlaneRepository planeRepo) {
