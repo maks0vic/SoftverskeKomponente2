@@ -36,8 +36,8 @@ public class AdminController {
     }
 
     public void addAdmins() {
-        Admin admin1 = new Admin(1, "gogi", encoder.encode("pass1"));
-        Admin admin2 = new Admin(2, "suki", encoder.encode("pass2"));
+        Admin admin1 = new Admin("gogi", encoder.encode("pass1"));
+        Admin admin2 = new Admin("suki", encoder.encode("pass2"));
         adminRepo.saveAndFlush(admin1);
         adminRepo.saveAndFlush(admin2);
     }
@@ -45,60 +45,17 @@ public class AdminController {
     @GetMapping("/is_admin")
     public ResponseEntity<String> isAdmin(@RequestHeader(value = HEADER_STRING) String token) {
         try {
-            System.out.println("USAO U ISADMIN");
-            // izvlacimo iz tokena subject koj je postavljen da bude email
             String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
-            //System.out.println("NASAO GOGIJA " + username);
-            Admin admin = adminRepo.findByUsername(username);
 
-            return new ResponseEntity<>(admin.getUsername(), HttpStatus.ACCEPTED);
+            Admin admin = adminRepo.findByUsername(username);
+            if (admin != null)
+                return new ResponseEntity<String>(admin.getUsername(), HttpStatus.ACCEPTED);
+            else
+                return  new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @PostMapping("/add_flight")
-//    public ResponseEntity<String> addFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody CreditCardForm creditCardForm) {
-//        try {
-//            // izvlacimo iz tokena subject koj je postavljen da bude email
-//            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
-//                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
-//
-//            User user = userRepo.findByEmail(email);
-//
-//            CreditCard creditCard = new CreditCard(creditCardForm.getFirstName(), creditCardForm.getLastName(),
-//                    creditCardForm.getCardNumber(), creditCardForm.getSecurityNumber());
-//
-//            //user.addCreditCard();
-//            creditCardRepository.saveAndFlush(creditCard);
-//
-//            return new ResponseEntity<String>("Flight " + , HttpStatus.ACCEPTED);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
-//
-//    @PostMapping("/delete_flight")
-//    public ResponseEntity<String> deleteFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody CreditCardForm creditCardForm) {
-//        try {
-//            // izvlacimo iz tokena subject koj je postavljen da bude email
-//            String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
-//                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
-//
-//            Admin admin = adminRepo.findByUsername(username);
-//
-//            String flightName =
-//
-//            //user.addCreditCard();
-//            creditCardRepository.saveAndFlush(creditCard);
-//
-//            return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
 }

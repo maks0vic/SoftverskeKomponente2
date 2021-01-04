@@ -12,19 +12,30 @@ public class CreditCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private long userId;
     private String firstName;
     private String lastName;
     private String cardNumber;
     private String securityNumber;
 
+
     public CreditCard() {
     }
 
-    public CreditCard(String firstName, String lastName, String cardNumber, String securityNumber) {
+    public CreditCard(long userId, String firstName, String lastName, String cardNumber, String securityNumber) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.cardNumber = cardNumber;
         this.securityNumber = securityNumber;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public long getId() {

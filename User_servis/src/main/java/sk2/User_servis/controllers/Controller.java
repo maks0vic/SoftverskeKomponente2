@@ -31,25 +31,9 @@ public class Controller {
         this.creditCardRepo = creditCardRepository;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerPost(@RequestBody RegistrationForm registrationForm) {
-        try {
-            User user = new User (registrationForm.getFirstName(), registrationForm.getLastName(), registrationForm.getEmail(),
-                    encoder.encode(registrationForm.getPassword()), registrationForm.getPassportNumber());
-
-            userRepo.saveAndFlush(user);
-            return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping("/who_am_i")
     public ResponseEntity<String> whoAmI(@RequestHeader(value = HEADER_STRING) String token) {
         try {
-            // izvlacimo iz tokena subject koj je postavljen da bude email
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
@@ -71,39 +55,31 @@ public class Controller {
 
             User user = userRepo.findByEmail(email);
 
-            return new ResponseEntity<String>(user.getRank().toString(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<String>(user.getRank().toString(), HttpStatus.FOUND);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/add_card")
-    public ResponseEntity<String> addCard(@RequestHeader(value = HEADER_STRING) String token, @RequestBody CreditCardForm creditCardForm) {
+    @PostMapping("/register")
+    public ResponseEntity<String> registerPost(@RequestBody RegistrationForm registrationForm) {
         try {
-            // izvlacimo iz tokena subject koj je postavljen da bude email
-            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
-                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+            User user = new User (registrationForm.getFirstName(), registrationForm.getLastName(), registrationForm.getEmail(),
+                    encoder.encode(registrationForm.getPassword()), registrationForm.getPassportNumber());
 
-            User user = userRepo.findByEmail(email);
-
-            CreditCard creditCard = new CreditCard(creditCardForm.getFirstName(), creditCardForm.getLastName(),
-                    creditCardForm.getCardNumber(), creditCardForm.getSecurityNumber());
-
-            //user.addCreditCard();
-            creditCardRepo.saveAndFlush(creditCard);
-
+            userRepo.saveAndFlush(user);
             return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/update_data")
     public ResponseEntity<String> updateFirstName(@RequestHeader(value = HEADER_STRING) String token, @RequestBody UpdateDataForm updateDataForm) {
         try {
-            // izvlacimo iz tokena subject koj je postavljen da bude email
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
@@ -134,10 +110,4 @@ public class Controller {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
-
-
-
-
-
 }
