@@ -10,6 +10,8 @@ import sk2.Flight_servis.forms.*;
 import sk2.Flight_servis.repository.FlightRepository;
 import sk2.Flight_servis.repository.PlaneRepository;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("")
 public class Controller {
@@ -24,26 +26,36 @@ public class Controller {
     }
 
     @GetMapping("/flight_list")
-    public ResponseEntity<String> registerPost() {
+    public ResponseEntity<List<Flight>> getFlightList() {
         try {
-            return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
+            List<Flight> flights = flightRepo.findAll();
+            return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<List<Flight>>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/search_flight")
-    public ResponseEntity<String> registerPost(@RequestBody SearchFlightForm form) {
+    public ResponseEntity<List<Flight>> searchFlight(@RequestBody SearchFlightForm form) {
         try {
-
-            //flightRepo.findById();
-            return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
+            List<Flight> flights = null;
+            if (form.getPlane() != null)
+                flights = flightRepo.findAllByPlane(form.getPlane());
+            if (form.getPlane() != null)
+                flights = flightRepo.findAllByStartDestination(form.getStartDestination());
+            if (form.getPlane() != null)
+                flights = flightRepo.findAllByFinishDestination(form.getFinishDestination());
+            if (form.getPlane() != null)
+                flights = flightRepo.findAllByLength(form.getLength());
+            if (form.getPlane() != null)
+                flights = flightRepo.findAllByPrice(form.getPrice());
+            return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<List<Flight>>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -97,7 +109,14 @@ public class Controller {
         try {
 
             long id = form.getId();
-            planeRepo.deleteById(id);
+            try{
+                Boolean b = planeRepo.deleteById(id);
+                System.out.println(b);
+            } catch (Exception e ){
+                e.printStackTrace();
+                return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.ACCEPTED);
+            }
+
             return new ResponseEntity<String>("Success, plane deleted", HttpStatus.ACCEPTED);
 
         } catch (Exception e) {

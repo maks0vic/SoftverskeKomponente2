@@ -9,6 +9,6 @@ public interface PlaneRepository extends JpaRepository<Plane, Long> {
 
     Plane findByName(String name);
     boolean existsByName(String name);
-    boolean deleteById(long id);
+    Boolean deleteById(long id);
 
 }
