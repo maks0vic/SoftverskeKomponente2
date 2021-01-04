@@ -6,4 +6,8 @@ import sk2.Flight_servis.entities.Flight;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> {
+
+    Flight findById(long id);
+    boolean existsById(long id);
+    boolean deleteById(long id);
 }

@@ -19,8 +19,7 @@ public class Flight {
     public Flight(){
     }
 
-    public Flight(Long id, Plane plane, String startDestination, String finishDestination, Integer length, BigDecimal price) {
-        this.id = id;
+    public Flight(Plane plane, String startDestination, String finishDestination, Integer length, BigDecimal price) {
         this.plane = plane;
         this.startDestination = startDestination;
         this.finishDestination = finishDestination;

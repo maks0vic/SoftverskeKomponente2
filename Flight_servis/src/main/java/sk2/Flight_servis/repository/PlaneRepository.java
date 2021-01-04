@@ -6,4 +6,9 @@ import sk2.Flight_servis.entities.Plane;
 
 @Repository
 public interface PlaneRepository extends JpaRepository<Plane, Long> {
+
+    Plane findByName(String name);
+    boolean existsByName(String name);
+    boolean deleteById(long id);
+
 }

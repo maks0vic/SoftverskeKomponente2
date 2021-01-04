@@ -17,8 +17,7 @@ public class Plane {
     public Plane() {
     }
 
-    public Plane(Long id, String name, Integer capacity) {
-        this.id = id;
+    public Plane(String name, Integer capacity) {
         this.name = name;
         this.capacity = capacity;
     }
