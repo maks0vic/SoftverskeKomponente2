@@ -53,7 +53,10 @@ public class Controller {
     }
 
     @PostMapping("/search_flight")
-    public ResponseEntity<List<Flight>> searchFlight(@RequestBody SearchFlightForm form) {
+    public ResponseEntity<List<Flight>> searchFlight(@RequestHeader(value = HEADER_STRING) String token,@RequestBody SearchFlightForm form) {
+        String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
         try {
             List<Flight> flights = Collections.emptyList();
             if (form.getStartDestination() != null)
@@ -73,8 +76,11 @@ public class Controller {
     }
 
     @PostMapping("/add_flight")
-    public ResponseEntity<String> addFlight(@RequestBody AddFlightForm form) {
+    public ResponseEntity<String> addFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody AddFlightForm form) {
         try {
+
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
             Flight flight = new Flight(form.getPlaneId(),form.getStartDestination(),
                     form.getFinishDestination(),form.getLength(), form.getPrice());
@@ -89,8 +95,12 @@ public class Controller {
     }
 
     @PostMapping("/delete_flight")
-    public ResponseEntity<String> deleteFlight(@RequestBody DeleteFlightForm form) {
+    public ResponseEntity<String> deleteFlight(@RequestHeader(value = HEADER_STRING) String token,@RequestBody DeleteFlightForm form) {
         try {
+
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
             long id = form.getId();
             try{
                 Boolean b = flightRepo.deleteById(id);
@@ -107,8 +117,11 @@ public class Controller {
     }
 
     @PostMapping("/add_plane")
-    public ResponseEntity<String> addPlane(@RequestBody AddPlaneForm form) {
+    public ResponseEntity<String> addPlane(@RequestHeader(value = HEADER_STRING) String token,@RequestBody AddPlaneForm form) {
         try {
+
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
             Plane plane = new Plane(form.getName(), form.getCapacity());
 
@@ -122,8 +135,12 @@ public class Controller {
     }
 
     @PostMapping("/delete_plane")
-    public ResponseEntity<String> deletePlane(@RequestBody DeletePlaneForm form) {
+    public ResponseEntity<String> deletePlane(@RequestHeader(value = HEADER_STRING) String token,@RequestBody DeletePlaneForm form) {
         try {
+
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
             long id = form.getId();
             try{
                 Boolean b = planeRepo.deleteById(id);
