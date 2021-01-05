@@ -1,19 +1,21 @@
 package sk2.Ticket_servis.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sk2.Ticket_servis.entities.Ticket;
 import sk2.Ticket_servis.forms.BoughtTicketsForm;
 import sk2.Ticket_servis.forms.BuyTicketForm;
 import sk2.Ticket_servis.repository.TicketRepository;
 
-import java.time.LocalDate;
+import static sk2.Ticket_servis.service.Constants.*;
+
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +32,11 @@ public class Controller {
     }
 
     @PostMapping("/buy_ticket")
-    public ResponseEntity<String> buyTicket(@RequestBody BuyTicketForm ticketForm) {
+    public ResponseEntity<String> buyTicket(@RequestHeader(value = HEADER_STRING) String token,@RequestBody BuyTicketForm ticketForm) {
+
+        String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
         try {
             System.out.println("Usao u buy_ticket");
             Ticket ticket = new Ticket(ticketForm.getUserId(), ticketForm.getFlightId(),
@@ -46,17 +52,19 @@ public class Controller {
     }
 
     @PostMapping("/bought_tickets")
-    public ResponseEntity<List<Ticket>> boughtTickets(@RequestBody BoughtTicketsForm ticketForm) {
+    public ResponseEntity<List<Ticket>> boughtTickets(@RequestHeader(value = HEADER_STRING) String token, @RequestBody BoughtTicketsForm ticketForm) {
+
+        String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+        // izbaci da se salje userId, prebaci ovo u Get i citaj iz tokena usera
         try {
             System.out.println("Usao u bought_tickets");
 
             if (ticketRepo.existsByUserId(ticketForm.getUserId())) {
                 List<Ticket> tickets = ticketRepo.findAllByUserId(ticketForm.getUserId());
 
-
                 return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.ACCEPTED);
             }
-
             return new ResponseEntity<List<Ticket>>(Collections.emptyList(), HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
@@ -65,3 +73,6 @@ public class Controller {
         }
     }
 }
+
+
+//izvadi logiku iz kontrolera, prebaci u service

@@ -2,7 +2,7 @@ package sk2.Ticket_servis.Listener;
 
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-import sk2.Ticket_servis.Service.MyService;
+import sk2.Ticket_servis.service.MyService;
 
 @Component
 public class Consumer {
