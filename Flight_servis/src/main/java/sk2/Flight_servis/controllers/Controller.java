@@ -12,6 +12,7 @@ import sk2.Flight_servis.entities.Plane;
 import sk2.Flight_servis.forms.*;
 import sk2.Flight_servis.repository.FlightRepository;
 import sk2.Flight_servis.repository.PlaneRepository;
+import sk2.Flight_servis.service.Service;
 
 import javax.jms.Queue;
 import java.util.Collections;
@@ -78,16 +79,18 @@ public class Controller {
     @PostMapping("/add_flight")
     public ResponseEntity<String> addFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody AddFlightForm form) {
         try {
-
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            Flight flight = new Flight(form.getPlaneId(),form.getStartDestination(),
-                    form.getFinishDestination(),form.getLength(), form.getPrice());
+            ResponseEntity<String> res = Service.checkAdmin("http://localhost:8080/is_admin", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED){
+                Flight flight = new Flight(form.getPlaneId(),form.getStartDestination(),
+                        form.getFinishDestination(),form.getLength(), form.getPrice());
 
-            flightRepo.saveAndFlush(flight);
-            return new ResponseEntity<String>("Success, flight added", HttpStatus.ACCEPTED);
-
+                flightRepo.saveAndFlush(flight);
+                return new ResponseEntity<String>("Success, flight added", HttpStatus.ACCEPTED);
+            }
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -101,15 +104,20 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            long id = form.getId();
-            try{
-                Boolean b = flightRepo.deleteById(id);
-                System.out.println(b);
-            } catch (Exception e ){
-                e.printStackTrace();
-                return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.ACCEPTED);
+            ResponseEntity<String> res = Service.checkAdmin("http://localhost:8080/is_admin", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED){
+                long id = form.getId();
+                try{
+                    Boolean b = flightRepo.deleteById(id);
+                    System.out.println(b);
+                } catch (Exception e ){
+                    e.printStackTrace();
+                    return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<String>("Success, flight deleted", HttpStatus.ACCEPTED);
             }
-            return new ResponseEntity<String>("Success, flight deleted", HttpStatus.ACCEPTED);
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -123,10 +131,14 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            Plane plane = new Plane(form.getName(), form.getCapacity());
+            ResponseEntity<String> res = Service.checkAdmin("http://localhost:8080/is_admin", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED){
+                Plane plane = new Plane(form.getName(), form.getCapacity());
+                planeRepo.saveAndFlush(plane);
+                return new ResponseEntity<String>("Success, plane added", HttpStatus.ACCEPTED);
+            }
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 
-            planeRepo.saveAndFlush(plane);
-            return new ResponseEntity<String>("Success, plane added", HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,16 +153,20 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            long id = form.getId();
-            try{
-                Boolean b = planeRepo.deleteById(id);
-                System.out.println(b);
-            } catch (Exception e ){
-                e.printStackTrace();
-                return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.ACCEPTED);
+            ResponseEntity<String> res = Service.checkAdmin("http://localhost:8080/is_admin", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED){
+                long id = form.getId();
+                try{
+                    Boolean b = planeRepo.deleteById(id);
+                    System.out.println(b);
+                } catch (Exception e ){
+                    e.printStackTrace();
+                    return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<String>("Success, plane deleted", HttpStatus.ACCEPTED);
             }
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 
-            return new ResponseEntity<String>("Success, plane deleted", HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
             e.printStackTrace();
