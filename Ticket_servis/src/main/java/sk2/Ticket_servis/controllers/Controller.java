@@ -12,6 +12,7 @@ import sk2.Ticket_servis.entities.Ticket;
 import sk2.Ticket_servis.forms.BoughtTicketsForm;
 import sk2.Ticket_servis.forms.BuyTicketForm;
 import sk2.Ticket_servis.repository.TicketRepository;
+import sk2.Ticket_servis.service.MyService;
 
 import static sk2.Ticket_servis.service.Constants.*;
 
@@ -32,19 +33,21 @@ public class Controller {
     }
 
     @PostMapping("/buy_ticket")
-    public ResponseEntity<String> buyTicket(@RequestHeader(value = HEADER_STRING) String token,@RequestBody BuyTicketForm ticketForm) {
-
-        String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
-                .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
-
+    public ResponseEntity<String> buyTicket(@RequestHeader(value = HEADER_STRING) String token, @RequestBody BuyTicketForm ticketForm) {
         try {
-            System.out.println("Usao u buy_ticket");
-            Ticket ticket = new Ticket(ticketForm.getUserId(), ticketForm.getFlightId(),
-                    new Date());
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            ticketRepo.saveAndFlush(ticket);
-            return new ResponseEntity<String>("Ticket bought", HttpStatus.ACCEPTED);
+            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED) {
+                System.out.println("Usao u buy_ticket");
+                Ticket ticket = new Ticket(ticketForm.getUserId(), ticketForm.getFlightId(),
+                        new Date());
 
+                ticketRepo.saveAndFlush(ticket);
+                return new ResponseEntity<String>("Ticket bought", HttpStatus.ACCEPTED);
+            }
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -56,16 +59,18 @@ public class Controller {
 
         String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                 .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
-        // izbaci da se salje userId, prebaci ovo u Get i citaj iz tokena usera
         try {
             System.out.println("Usao u bought_tickets");
+            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED) {
+                if (ticketRepo.existsByUserId(ticketForm.getUserId())) {
+                    List<Ticket> tickets = ticketRepo.findAllByUserId(ticketForm.getUserId());
 
-            if (ticketRepo.existsByUserId(ticketForm.getUserId())) {
-                List<Ticket> tickets = ticketRepo.findAllByUserId(ticketForm.getUserId());
-
-                return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.ACCEPTED);
+                    return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.ACCEPTED);
+                }
+                return new ResponseEntity<List<Ticket>>(Collections.emptyList(), HttpStatus.ACCEPTED);
             }
-            return new ResponseEntity<List<Ticket>>(Collections.emptyList(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         } catch (Exception e) {
             e.printStackTrace();
