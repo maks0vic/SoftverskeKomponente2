@@ -1,22 +1,20 @@
 package sk2.Flight_servis.forms;
 
-import sk2.Flight_servis.entities.Plane;
-
 import java.math.BigDecimal;
 
 public class AddFlightForm {
-    private Plane plane;
+    private long planeId;
     private String startDestination;
     private String finishDestination;
     private Integer length;
     private BigDecimal price;
 
-    public Plane getPlane() {
-        return plane;
+    public long getPlaneId() {
+        return planeId;
     }
 
-    public void setPlane(Plane plane) {
-        this.plane = plane;
+    public void setPlane(long planeId) {
+        this.planeId = planeId;
     }
 
     public String getStartDestination() {

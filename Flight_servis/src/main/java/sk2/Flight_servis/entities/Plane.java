@@ -10,9 +10,9 @@ public class Plane {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String name;
-    private Integer capacity;
+    private int capacity;
 
     public Plane() {
     }

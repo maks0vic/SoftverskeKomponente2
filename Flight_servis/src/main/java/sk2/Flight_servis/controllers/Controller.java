@@ -1,5 +1,7 @@
 package sk2.Flight_servis.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,10 @@ import sk2.Flight_servis.repository.FlightRepository;
 import sk2.Flight_servis.repository.PlaneRepository;
 
 import javax.jms.Queue;
+import java.util.Collections;
 import java.util.List;
+
+import static sk2.Flight_servis.service.Constants.*;
 
 @RestController
 @RequestMapping("")
@@ -34,11 +39,13 @@ public class Controller {
     }
 
     @GetMapping("/flight_list")
-    public ResponseEntity<List<Flight>> getFlightList() {
+    public ResponseEntity<List<Flight>> getFlightList(@RequestHeader(value = HEADER_STRING) String token) {
         try {
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
             List<Flight> flights = flightRepo.findAll();
             return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<Flight>>(HttpStatus.BAD_REQUEST);
@@ -48,16 +55,14 @@ public class Controller {
     @PostMapping("/search_flight")
     public ResponseEntity<List<Flight>> searchFlight(@RequestBody SearchFlightForm form) {
         try {
-            List<Flight> flights = null;
-            if (form.getPlane() != null)
-                flights = flightRepo.findAllByPlane(form.getPlane());
-            if (form.getPlane() != null)
+            List<Flight> flights = Collections.emptyList();
+            if (form.getStartDestination() != null)
                 flights = flightRepo.findAllByStartDestination(form.getStartDestination());
-            if (form.getPlane() != null)
+            if (form.getFinishDestination() != null)
                 flights = flightRepo.findAllByFinishDestination(form.getFinishDestination());
-            if (form.getPlane() != null)
+            if (form.getLength() != null)
                 flights = flightRepo.findAllByLength(form.getLength());
-            if (form.getPlane() != null)
+            if (form.getPrice() != null)
                 flights = flightRepo.findAllByPrice(form.getPrice());
             return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
 
@@ -71,7 +76,7 @@ public class Controller {
     public ResponseEntity<String> addFlight(@RequestBody AddFlightForm form) {
         try {
 
-            Flight flight = new Flight(form.getPlane(),form.getStartDestination(),
+            Flight flight = new Flight(form.getPlaneId(),form.getStartDestination(),
                     form.getFinishDestination(),form.getLength(), form.getPrice());
 
             flightRepo.saveAndFlush(flight);
@@ -86,11 +91,15 @@ public class Controller {
     @PostMapping("/delete_flight")
     public ResponseEntity<String> deleteFlight(@RequestBody DeleteFlightForm form) {
         try {
-
             long id = form.getId();
-            flightRepo.deleteById(id);
+            try{
+                Boolean b = flightRepo.deleteById(id);
+                System.out.println(b);
+            } catch (Exception e ){
+                e.printStackTrace();
+                return new ResponseEntity<String>("Fail, plane not deleted", HttpStatus.ACCEPTED);
+            }
             return new ResponseEntity<String>("Success, flight deleted", HttpStatus.ACCEPTED);
-
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -115,7 +124,6 @@ public class Controller {
     @PostMapping("/delete_plane")
     public ResponseEntity<String> deletePlane(@RequestBody DeletePlaneForm form) {
         try {
-
             long id = form.getId();
             try{
                 Boolean b = planeRepo.deleteById(id);
@@ -132,7 +140,4 @@ public class Controller {
             return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
         }
     }
-    
-
-
 }

@@ -85,21 +85,21 @@ public class Controller {
 
             User user = userRepo.findByEmail(email);
 
-            if (updateDataForm.getEmail() != null) {
+            if (updateDataForm.getEmail() != null && updateDataForm.getEmail() != "") {
                 user.setEmail(updateDataForm.getEmail());
                 //send email
             }
 
-            if (updateDataForm.getFirstName() != null)
+            if (updateDataForm.getFirstName() != null && updateDataForm.getFirstName() != "")
                 user.setFirstName(updateDataForm.getFirstName());
 
-            if (updateDataForm.getLastName() != null)
+            if (updateDataForm.getLastName() != null && updateDataForm.getLastName() != "")
                 user.setLastName(updateDataForm.getLastName());
 
-            if (updateDataForm.getPassword() != null)
+            if (updateDataForm.getPassword() != null && updateDataForm.getPassword() != "")
                 user.setPassword(encoder.encode(updateDataForm.getPassword()));
 
-            if (updateDataForm.getPassportNumber() != null)
+            if (updateDataForm.getPassportNumber() != null && updateDataForm.getPassportNumber() != "")
                 user.setPassportNumber(updateDataForm.getPassportNumber());
 
             userRepo.saveAndFlush(user);

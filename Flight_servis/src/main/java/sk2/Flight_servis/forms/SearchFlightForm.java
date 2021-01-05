@@ -6,18 +6,18 @@ import java.math.BigDecimal;
 
 public class SearchFlightForm {
 
-    private Plane plane;
+    private long planeId;
     private String startDestination;
     private String finishDestination;
     private Integer length;
     private BigDecimal price;
 
-    public Plane getPlane() {
-        return plane;
+    public long getPlaneId() {
+        return planeId;
     }
 
-    public void setPlane(Plane plane) {
-        this.plane = plane;
+    public void setPlaneId(long planeId) {
+        this.planeId = planeId;
     }
 
     public String getStartDestination() {

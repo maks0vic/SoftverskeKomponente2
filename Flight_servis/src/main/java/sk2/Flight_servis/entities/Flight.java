@@ -9,8 +9,8 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private Plane plane;
+
+    private long planeId;
     private String startDestination;
     private String finishDestination;
     private Integer length;
@@ -19,15 +19,13 @@ public class Flight {
     public Flight(){
     }
 
-    public Flight(Plane plane, String startDestination, String finishDestination, Integer length, BigDecimal price) {
-        this.plane = plane;
+    public Flight(long planeId, String startDestination, String finishDestination, Integer length, BigDecimal price) {
+        this.planeId = planeId;
         this.startDestination = startDestination;
         this.finishDestination = finishDestination;
         this.length = length;
         this.price = price;
     }
-
-
 
     public Long getId() {
         return id;
@@ -37,12 +35,12 @@ public class Flight {
         this.id = id;
     }
 
-    public Plane getPlane() {
-        return plane;
+    public long getPlaneId() {
+        return planeId;
     }
 
-    public void setPlane(Plane plane) {
-        this.plane = plane;
+    public void setPlaneId(long planeId) {
+        this.planeId = planeId;
     }
 
     public String getStartDestination() {

@@ -13,8 +13,8 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
 
     Flight findById(long id);
     boolean existsById(long id);
-    boolean deleteById(long id);
-    List<Flight> findAllByPlane(Plane plane);
+    Boolean deleteById(long id);
+    List<Flight> findAllByPlaneId(long planeId);
     List<Flight> findAllByStartDestination(String startDestination);
     List<Flight> findAllByFinishDestination(String finishDestination);
     List<Flight> findAllByLength(Integer length);
