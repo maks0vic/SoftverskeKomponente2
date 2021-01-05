@@ -39,7 +39,7 @@ public class Controller {
 
             User user = userRepo.findByEmail(email);
 
-            return new ResponseEntity<>(user.getFirstName() + " " + user.getLastName(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<String>(user.getFirstName() + " " + user.getLastName(), HttpStatus.ACCEPTED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
