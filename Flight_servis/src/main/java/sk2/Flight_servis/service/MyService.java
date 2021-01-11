@@ -3,8 +3,10 @@ package sk2.Flight_servis.service;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import sk2.Flight_servis.entities.Flight;
+import sk2.Flight_servis.entities.Plane;
 import sk2.Flight_servis.forms.SearchFlightForm;
 import sk2.Flight_servis.repository.FlightRepository;
+import sk2.Flight_servis.repository.PlaneRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +56,13 @@ public class MyService {
         flights = flightRepo.findAll();
         System.out.println("Koliko ima letova: " + flights.size());
         return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
+    }
+
+    public static ResponseEntity<List<Plane>> getPlaneList ( PlaneRepository planeRepo) {
+        List<Plane> planes = Collections.emptyList();
+        planes = planeRepo.findAll();
+        System.out.println("Koliko ima letova: " + planes.size());
+        return new ResponseEntity<List<Plane>>(planes, HttpStatus.ACCEPTED);
     }
 
 }

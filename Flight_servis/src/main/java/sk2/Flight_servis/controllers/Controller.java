@@ -48,10 +48,10 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            //ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
-            //ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
-            //if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
-            if (true){
+            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
+            if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
+            //if (true){
                 ResponseEntity<List<Flight>> flights = MyService.getFlightList(flightRepo);
                 return flights;
             }
@@ -60,6 +60,28 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<Flight>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping("/plane_list")
+    public ResponseEntity<List<Plane>> getPlaneList(@RequestHeader(value = HEADER_STRING) String token) {
+        try {
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+//            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+//            ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
+//            if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
+                if (true){
+                ResponseEntity<List<Plane>> planes = MyService.getPlaneList(planeRepo);
+                return planes;
+            }
+            System.out.println("Nije lepo autorizovan" + email);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<Plane>>(HttpStatus.BAD_REQUEST);
         }
     }
 

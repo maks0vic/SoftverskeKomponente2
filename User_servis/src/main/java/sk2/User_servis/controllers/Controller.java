@@ -3,6 +3,7 @@ package sk2.User_servis.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ import sk2.User_servis.forms.UpdateDataForm;
 import sk2.User_servis.repository.CreditCardRepository;
 import sk2.User_servis.repository.UserRepository;
 import static sk2.User_servis.security.SecurityConstants.*;
+import sk2.User_servis.services.MyService;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("")
@@ -32,14 +36,14 @@ public class Controller {
     }
 
     @GetMapping("/who_am_i")
-    public ResponseEntity<String> whoAmI(@RequestHeader(value = HEADER_STRING) String token) {
+    public ResponseEntity<User> whoAmI(@RequestHeader(value = HEADER_STRING) String token) {
         try {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
             User user = userRepo.findByEmail(email);
             if (user != null)
-                return new ResponseEntity<String>(user.getFirstName() + " " + user.getLastName(), HttpStatus.ACCEPTED);
+                return new ResponseEntity<User>(user, HttpStatus.ACCEPTED);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -89,6 +93,7 @@ public class Controller {
 
             if (updateDataForm.getEmail() != null && updateDataForm.getEmail() != "") {
                 user.setEmail(updateDataForm.getEmail());
+                token = MyService.resendJWT(updateDataForm.getEmail());
                 //send email
             }
 
@@ -106,7 +111,11 @@ public class Controller {
 
             userRepo.saveAndFlush(user);
 
-            return new ResponseEntity<String>("Success updated", HttpStatus.ACCEPTED);
+            return ResponseEntity.ok()
+                    .header("Authorization", token)
+                    .body("Podaci obnovljeni");
+
+            // return new ResponseEntity<String>("Podaci obnovljeni",headers, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
