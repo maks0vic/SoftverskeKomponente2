@@ -39,6 +39,7 @@ public class Controller {
         this.planeRepo = planeRepo;
     }
 
+    @CrossOrigin
     @GetMapping("/flight_list")
     public ResponseEntity<List<Flight>> getFlightList(@RequestHeader(value = HEADER_STRING) String token) {
         try {
@@ -57,6 +58,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/search_flight")
     public ResponseEntity<List<Flight>> searchFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody SearchFlightForm form) {
         String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
@@ -75,6 +77,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/add_flight")
     public ResponseEntity<String> addFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody AddFlightForm form) {
         try {
@@ -96,6 +99,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/delete_flight")
     public ResponseEntity<String> deleteFlight(@RequestHeader(value = HEADER_STRING) String token, @RequestBody DeleteFlightForm form) {
         try {
@@ -123,6 +127,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/add_plane")
     public ResponseEntity<String> addPlane(@RequestHeader(value = HEADER_STRING) String token, @RequestBody AddPlaneForm form) {
         try {
@@ -145,6 +150,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/delete_plane")
     public ResponseEntity<String> deletePlane(@RequestHeader(value = HEADER_STRING) String token, @RequestBody DeletePlaneForm form) {
         try {
