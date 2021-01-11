@@ -15,7 +15,6 @@ import sk2.Flight_servis.repository.PlaneRepository;
 import sk2.Flight_servis.service.MyService;
 
 import javax.jms.Queue;
-import java.util.Collections;
 import java.util.List;
 
 import static sk2.Flight_servis.service.Constants.*;
@@ -29,6 +28,9 @@ public class Controller {
 
     @Autowired
     JmsTemplate jmsTemplate;
+
+    @Autowired
+    Queue flightsQueue;
 
     @Autowired
     Queue ticketsQueue;
@@ -45,11 +47,14 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
-            if (res.getStatusCode() == HttpStatus.ACCEPTED) {
+            //ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            //ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
+            //if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
+            if (true){
                 ResponseEntity<List<Flight>> flights = MyService.getFlightList(flightRepo);
                 return flights;
             }
+            System.out.println("Nije lepo autorizovan" + email);
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,6 +107,8 @@ public class Controller {
 
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+            jmsTemplate.convertAndSend(flightsQueue,email);
 
             ResponseEntity<String> res = MyService.checkAdmin("http://localhost:8080/is_admin", token);
             if (res.getStatusCode() == HttpStatus.ACCEPTED) {

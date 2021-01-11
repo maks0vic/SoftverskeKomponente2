@@ -6,6 +6,15 @@ public class UpdateDataForm {
     private String email;
     private String password;
     private String passportNumber;
+    private int miles;
+
+    public int getMiles() {
+        return miles;
+    }
+
+    public void setMiles(int miles) {
+        this.miles = miles;
+    }
 
     public String getFirstName() {
         return firstName;

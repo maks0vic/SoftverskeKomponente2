@@ -20,6 +20,7 @@ public class User {
     private String password;
     private String passportNumber;
     private Rank rank;
+    private int miles;
 
     public User() {
     }
@@ -31,6 +32,15 @@ public class User {
         this.password = password;
         this.passportNumber = passportNumber;
         this.rank = Rank.BRONZE;
+        this.miles = 0;
+    }
+
+    public int getMiles() {
+        return miles;
+    }
+
+    public void setMiles(int miles) {
+        this.miles = miles;
     }
 
     public long getId() {

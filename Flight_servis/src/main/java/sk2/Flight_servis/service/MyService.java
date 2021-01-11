@@ -19,7 +19,7 @@ public class MyService {
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
+        System.out.println("Dobio response: " + response.getStatusCode());
         return response;
     }
 
@@ -52,6 +52,7 @@ public class MyService {
     public static ResponseEntity<List<Flight>> getFlightList ( FlightRepository flightRepo) {
         List<Flight> flights = Collections.emptyList();
         flights = flightRepo.findAll();
+        System.out.println("Koliko ima letova: " + flights.size());
         return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
     }
 

@@ -38,8 +38,10 @@ public class Controller {
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
             User user = userRepo.findByEmail(email);
-
-            return new ResponseEntity<String>(user.getFirstName() + " " + user.getLastName(), HttpStatus.ACCEPTED);
+            if (user != null)
+                return new ResponseEntity<String>(user.getFirstName() + " " + user.getLastName(), HttpStatus.ACCEPTED);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
