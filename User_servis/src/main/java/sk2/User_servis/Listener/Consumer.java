@@ -13,7 +13,10 @@ public class Consumer {
     }
 
     @JmsListener(destination = "users.queue")
-    public void consume(String flightId) {
-        //service.cancelTickets(Long.parseLong(flightId));
+    public void consume(String req) {
+        String[] spl = req.split(",");
+        String email = spl[1];
+        String flightId = spl[0];
+        service.flightDeleteHandle(email, Long.parseLong(flightId));
     }
 }

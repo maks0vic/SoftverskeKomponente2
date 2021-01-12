@@ -194,6 +194,7 @@ public class Controller {
 
 
             jmsTemplate.convertAndSend(ticketsQueue, form.getId().toString());
+            jmsTemplate.convertAndSend(usersQueue,form.getId().toString() +","+ email );
 
             MyService.deleteFlight(form.getId() , flightRepo);
 

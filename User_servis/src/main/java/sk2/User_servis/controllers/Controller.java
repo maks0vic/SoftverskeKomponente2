@@ -27,12 +27,15 @@ public class Controller {
     private BCryptPasswordEncoder encoder;
     private UserRepository userRepo;
     private CreditCardRepository creditCardRepo;
+    private MyService myService;
 
     @Autowired
-    public Controller(BCryptPasswordEncoder encoder, UserRepository userRepo, CreditCardRepository creditCardRepository) {
+    public Controller(BCryptPasswordEncoder encoder, UserRepository userRepo,
+                      CreditCardRepository creditCardRepository, MyService myService) {
         this.encoder = encoder;
         this.userRepo = userRepo;
         this.creditCardRepo = creditCardRepository;
+        this.myService = myService;
     }
 
     @GetMapping("/who_am_i")
@@ -75,6 +78,11 @@ public class Controller {
                     encoder.encode(registrationForm.getPassword()), registrationForm.getPassportNumber());
 
             userRepo.saveAndFlush(user);
+
+            String email = user.getEmail();
+
+            myService.sendEmail(email);
+
             return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
@@ -94,7 +102,7 @@ public class Controller {
             if (updateDataForm.getEmail() != null && updateDataForm.getEmail() != "") {
                 user.setEmail(updateDataForm.getEmail());
                 token = MyService.resendJWT(updateDataForm.getEmail());
-                //send email
+                //myService.sendEmail(updateDataForm.getEmail());
             }
 
             if (updateDataForm.getFirstName() != null && updateDataForm.getFirstName() != "")

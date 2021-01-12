@@ -19,5 +19,6 @@ public class Consumer {
     @JmsListener(destination = "tickets.queue")
     public void consume(String flightId) {
         MyService.deleteFlightHandle(Long.parseLong(flightId), ticketRepo);
+
     }
 }
