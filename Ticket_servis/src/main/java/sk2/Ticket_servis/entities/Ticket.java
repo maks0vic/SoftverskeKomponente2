@@ -16,14 +16,24 @@ public class Ticket {
     private long userId;
     private long flightId;
     private Date date;
+    private long cardId;
 
     public Ticket() {
     }
 
-    public Ticket(long userId, long flightId, Date date) {
+    public Ticket(long userId, long flightId, long cardId, Date date) {
         this.userId = userId;
         this.flightId = flightId;
         this.date = date;
+        this.cardId = cardId;
+    }
+
+    public long getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(long cardId) {
+        this.cardId = cardId;
     }
 
     public long getId() {

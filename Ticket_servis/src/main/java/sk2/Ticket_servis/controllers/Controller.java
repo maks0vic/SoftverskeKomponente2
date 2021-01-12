@@ -3,6 +3,7 @@ package sk2.Ticket_servis.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +40,19 @@ public class Controller {
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
             ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            System.out.println(res.getBody());
+            String[] userId = res.getBody().toString().split(",");
+            userId = userId[0].split(":");
+            String ui = userId[1];
+            System.out.println(ui);
+
             if (res.getStatusCode() == HttpStatus.ACCEPTED) {
                 System.out.println("Usao u buy_ticket");
-                Ticket ticket = new Ticket(ticketForm.getUserId(), ticketForm.getFlightId(),
-                        new Date());
+                if (ticketForm.getCardId() == -1){
+                    System.out.println("Mora kartica da se unese");
+                }
+                Ticket ticket = new Ticket(Long.parseLong(ui), ticketForm.getFlightId(),
+                        ticketForm.getCardId(), new Date());
 
                 ticketRepo.saveAndFlush(ticket);
                 return new ResponseEntity<String>("Ticket bought", HttpStatus.ACCEPTED);
