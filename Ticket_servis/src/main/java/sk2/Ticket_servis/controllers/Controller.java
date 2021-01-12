@@ -66,17 +66,20 @@ public class Controller {
     }
 
     @CrossOrigin
-    @PostMapping("/bought_tickets")
-    public ResponseEntity<List<Ticket>> boughtTickets(@RequestHeader(value = HEADER_STRING) String token, @RequestBody BoughtTicketsForm ticketForm) {
+    @GetMapping("/bought_tickets")
+    public ResponseEntity<List<Ticket>> boughtTickets(@RequestHeader(value = HEADER_STRING) String token) {
 
         String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                 .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
         try {
             System.out.println("Usao u bought_tickets");
             ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+            String[] userId = res.getBody().toString().split(",");
+            userId = userId[0].split(":");
+            String ui = userId[1];
             if (res.getStatusCode() == HttpStatus.ACCEPTED) {
-                if (ticketRepo.existsByUserId(ticketForm.getUserId())) {
-                    List<Ticket> tickets = ticketRepo.findAllByUserId(ticketForm.getUserId());
+                if (ticketRepo.existsByUserId(Long.parseLong(ui))) {
+                    List<Ticket> tickets = ticketRepo.findAllByUserId(Long.parseLong(ui));
 
                     return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.ACCEPTED);
                 }
