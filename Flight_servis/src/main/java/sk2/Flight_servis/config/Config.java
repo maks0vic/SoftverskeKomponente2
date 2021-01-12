@@ -27,6 +27,7 @@ public class Config {
 
     @Bean
     public Queue flightsQueue() {
+        System.out.println("Pravim red letova");
         return new ActiveMQQueue("flights.queue");
     }
 

@@ -36,6 +36,10 @@ public class Controller {
     Queue ticketsQueue;
 
     @Autowired
+    Queue usersQueue;
+
+
+    @Autowired
     public Controller(FlightRepository flightRepo, PlaneRepository planeRepo) {
         this.flightRepo = flightRepo;
         this.planeRepo = planeRepo;
@@ -134,14 +138,18 @@ public class Controller {
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
-            jmsTemplate.convertAndSend(flightsQueue,email);
+
+            jmsTemplate.convertAndSend(ticketsQueue, form.getId().toString());
+
+            MyService.deleteFlight(form.getId() , flightRepo);
 
             ResponseEntity<String> res = MyService.checkAdmin("http://localhost:8080/is_admin", token);
             if (res.getStatusCode() == HttpStatus.ACCEPTED) {
                 long id = form.getId();
                 try {
-                    Boolean b = flightRepo.deleteById(id);
-                    System.out.println(b);
+                    System.out.println("otkazujem let sa id: " + id);
+                    //Boolean b = flightRepo.deleteById(id);
+                    //System.out.println(b);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return new ResponseEntity<String>("Fail, flight not deleted", HttpStatus.NOT_FOUND);
@@ -186,6 +194,8 @@ public class Controller {
 
             String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
                     .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+
 
             ResponseEntity<String> res = MyService.checkAdmin("http://localhost:8080/is_admin", token);
             if (res.getStatusCode() == HttpStatus.ACCEPTED) {

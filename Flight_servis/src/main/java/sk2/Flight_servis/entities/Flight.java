@@ -15,6 +15,7 @@ public class Flight {
     private String finishDestination;
     private Integer length;
     private BigDecimal price;
+    private Boolean canceled;
 
     public Flight(){
     }
@@ -25,6 +26,15 @@ public class Flight {
         this.finishDestination = finishDestination;
         this.length = length;
         this.price = price;
+        this.canceled = false;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
     }
 
     public Long getId() {

@@ -17,6 +17,7 @@ public class Ticket {
     private long flightId;
     private Date date;
     private long cardId;
+    private Boolean canceled;
 
     public Ticket() {
     }
@@ -26,6 +27,15 @@ public class Ticket {
         this.flightId = flightId;
         this.date = date;
         this.cardId = cardId;
+        this.canceled = false;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
     }
 
     public long getCardId() {

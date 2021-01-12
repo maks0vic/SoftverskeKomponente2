@@ -1,6 +1,9 @@
 package sk2.Flight_servis.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.jms.core.JmsMessageOperations;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.client.RestTemplate;
 import sk2.Flight_servis.entities.Flight;
 import sk2.Flight_servis.entities.Plane;
@@ -8,10 +11,25 @@ import sk2.Flight_servis.forms.SearchFlightForm;
 import sk2.Flight_servis.repository.FlightRepository;
 import sk2.Flight_servis.repository.PlaneRepository;
 
+import javax.jms.Queue;
 import java.util.Collections;
 import java.util.List;
 
 public class MyService {
+
+
+    @Autowired
+    JmsTemplate jmsTemplate;
+
+    @Autowired
+    Queue flightsQueue;
+
+    @Autowired
+    Queue ticketsQueue;
+
+    @Autowired
+    Queue usersQueue;
+
 
     public static ResponseEntity<String> checkUser(String url, String token) {
 
@@ -63,6 +81,13 @@ public class MyService {
         planes = planeRepo.findAll();
         System.out.println("Koliko ima letova: " + planes.size());
         return new ResponseEntity<List<Plane>>(planes, HttpStatus.ACCEPTED);
+    }
+
+    public static void deleteFlight (long id,  FlightRepository flightRepo) {
+        Flight flight = flightRepo.findById(id);
+        flight.setCanceled(true);
+        flightRepo.flush();
+        System.out.println("Provera da je let canceled:" + flight.getCanceled());
     }
 
 }

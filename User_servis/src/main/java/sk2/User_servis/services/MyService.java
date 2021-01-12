@@ -3,6 +3,7 @@ package sk2.User_servis.services;
 import com.auth0.jwt.JWT;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -11,6 +12,7 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static sk2.User_servis.security.SecurityConstants.*;
 import static sk2.User_servis.security.SecurityConstants.TOKEN_PREFIX;
 
+@Service
 public  class MyService {
 
     public static String  resendJWT (String email) {

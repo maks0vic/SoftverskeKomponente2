@@ -12,4 +12,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Ticket findByUserId(long userId);
     boolean existsByUserId(long userId);
     List<Ticket> findAllByUserId(long userId);
+    List<Ticket> findAllByFlightId(long flightId);
 }
