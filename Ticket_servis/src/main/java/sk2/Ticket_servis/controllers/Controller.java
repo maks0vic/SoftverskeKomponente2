@@ -33,6 +33,7 @@ public class Controller {
         this.ticketRepo = ticketRepo;
     }
 
+    @CrossOrigin
     @PostMapping("/buy_ticket")
     public ResponseEntity<String> buyTicket(@RequestHeader(value = HEADER_STRING) String token, @RequestBody BuyTicketForm ticketForm) {
         try {
@@ -64,6 +65,7 @@ public class Controller {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/bought_tickets")
     public ResponseEntity<List<Ticket>> boughtTickets(@RequestHeader(value = HEADER_STRING) String token, @RequestBody BoughtTicketsForm ticketForm) {
 
