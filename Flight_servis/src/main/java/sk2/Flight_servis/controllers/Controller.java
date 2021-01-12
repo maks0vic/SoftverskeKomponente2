@@ -3,6 +3,9 @@ package sk2.Flight_servis.controllers;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
@@ -39,6 +42,57 @@ public class Controller {
     public Controller(FlightRepository flightRepo, PlaneRepository planeRepo) {
         this.flightRepo = flightRepo;
         this.planeRepo = planeRepo;
+    }
+
+    @CrossOrigin
+    @GetMapping("/flight_list/{page_num}")
+    public ResponseEntity<List<Flight>> getFlightList(@PathVariable int page_num, @RequestHeader(value = HEADER_STRING) String token) {
+        try {
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+//            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+////            ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
+////            if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
+
+            Pageable page = PageRequest.of(page_num, 3);
+
+            System.out.println("USAO U ZAHTJEV");
+            if (true){
+                ResponseEntity<List<Flight>> flights = MyService.getFlightListPaginable(flightRepo, (Pageable) page);
+                return flights;
+            }
+            System.out.println("Nije lepo autorizovan" + email);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<Flight>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping("/count_flights")
+    public ResponseEntity<Integer> getFlightNumber(@RequestHeader(value = HEADER_STRING) String token) {
+        try {
+            String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+                    .verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+//            ResponseEntity<String> res = MyService.checkUser("http://localhost:8080/who_am_i", token);
+////            ResponseEntity<String> res2 = MyService.checkAdmin("http://localhost:8080/is_admin", token);
+////            if (res.getStatusCode() == HttpStatus.ACCEPTED || res2.getStatusCode() == HttpStatus.ACCEPTED) {
+
+
+            System.out.println("USAO U ZAHTJEV");
+            if (true){
+                ResponseEntity<Integer> count = MyService.countFlights(flightRepo);
+                return count;
+            }
+            System.out.println("Nije lepo autorizovan" + email);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<Integer>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @CrossOrigin

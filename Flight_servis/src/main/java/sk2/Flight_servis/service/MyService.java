@@ -1,5 +1,6 @@
 package sk2.Flight_servis.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import sk2.Flight_servis.entities.Flight;
@@ -58,6 +59,14 @@ public class MyService {
         return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
     }
 
+    public static ResponseEntity<List<Flight>> getFlightListPaginable ( FlightRepository flightRepo, Pageable page) {
+        List<Flight> flights = Collections.emptyList();
+        flights = flightRepo.getFlights(page);
+        System.out.println("USAO U ZAHTJEV");
+        System.out.println("Koliko ima letova: " + flights.size());
+        return new ResponseEntity<List<Flight>>(flights, HttpStatus.ACCEPTED);
+    }
+
     public static ResponseEntity<List<Plane>> getPlaneList ( PlaneRepository planeRepo) {
         List<Plane> planes = Collections.emptyList();
         planes = planeRepo.findAll();
@@ -65,4 +74,8 @@ public class MyService {
         return new ResponseEntity<List<Plane>>(planes, HttpStatus.ACCEPTED);
     }
 
+    public static ResponseEntity<Integer> countFlights ( FlightRepository flightRepo) {
+        Integer count = flightRepo.countFlights();
+        return new ResponseEntity<Integer>(count, HttpStatus.ACCEPTED);
+    }
 }
